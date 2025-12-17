@@ -63,13 +63,37 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                //
+                // 1. Judul Artikel
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable() // Bisa dicari
+                    ->sortable()
+                    ->weight('bold') // Cetak tebal biar jelas
+                    ->limit(50), // Batasi panjang teks biar tabel ga kepanjangan
+
+                // 2. Nama Penulis (Relasi)
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Penulis')
+                    ->searchable()
+                    ->sortable(),
+
+                // 3. Slug (Link) - Opsional biar admin tau linknya
+                Tables\Columns\TextColumn::make('slug')
+                    ->color('gray')
+                    ->limit(30),
+
+                // 4. Tanggal Dibuat
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->label('Dibuat Pada')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(), // Tombol hapus
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
